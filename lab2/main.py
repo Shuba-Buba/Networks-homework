@@ -3,7 +3,7 @@ import os
 import time
 
 MIN_MTU = 1
-MAX_MTU = 1500
+MAX_MTU = 1000000
 
 def Check(host, mtu, cnt):
     return os.system(f'ping -c {cnt} -M do -s {mtu} {host} -W 2 >/dev/null 2>&1') == 0
@@ -41,5 +41,15 @@ args = parser.parse_args()
 host = args.host
 verbose = args.verbose
 cnt = args.c
+
+if not cnt.isnumeric():
+    print("Cnt is not number")
+    exit(1)
+else:
+    cnt = int(cnt)
+
+if not Check(host, MIN_MTU, cnt):
+    print(f"Unavailable or invalid host: {host}")
+    exit(1)
 
 print(f"MTU = {Find_Mtu(host,verbose, cnt)}")
